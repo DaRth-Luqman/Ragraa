@@ -9,3 +9,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Firebase Secrets
+google-services.json
+config.bat
+node_modules
