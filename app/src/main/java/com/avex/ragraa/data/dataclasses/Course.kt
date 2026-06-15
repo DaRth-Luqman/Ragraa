@@ -2,6 +2,7 @@ package com.avex.ragraa.data.dataclasses
 
 data class Course(
     val name: String,
+    val teacherName: String = "Unknown",
     val marks: List<Section>,
     var newMarks: Boolean = false,
     val grandTotalExists: Boolean,

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("io.objectbox")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    alias(libs.plugins.googleServices)
 }
 
 android {
@@ -51,6 +52,8 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.database)
     implementation(libs.androidx.work.runtime.ktx.v281)
     implementation(libs.xcaptcha.java)
     implementation(libs.kotlinx.coroutines.android)

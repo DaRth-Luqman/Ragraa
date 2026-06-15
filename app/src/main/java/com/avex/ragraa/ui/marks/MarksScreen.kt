@@ -106,7 +106,12 @@ fun MarksScreen(
             val displayCourse = uiState.currentCourse ?: lastValidCourse
 
             displayCourse?.let {
-                CourseDetails(course = it) { viewModel.showAttendance() }
+                CourseDetails(
+                    course = it, 
+                    teacherStats = uiState.teacherStats,
+                    showAttendance = { viewModel.showAttendance() },
+                    onToggleSection = { section -> viewModel.toggleSection(section) }
+                )
             }
         }
     }

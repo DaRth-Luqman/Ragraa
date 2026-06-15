@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "382166301250",
+    "firebase_url": "https://ragraa-fc6eb-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "ragraa-fc6eb",
+    "storage_bucket": "ragraa-fc6eb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382166301250:android:cad4b7b68fcc40cd0ccbdb",
+        "android_client_info": {
+          "package_name": "com.avex.ragraa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "REDACTED_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

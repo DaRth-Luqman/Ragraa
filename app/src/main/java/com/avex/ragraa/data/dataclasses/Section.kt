@@ -6,6 +6,8 @@ data class Section(
     var obtained: Float,
     val total: Float,
     val average: Float,
+    val minimum: Float = 0f,
+    val maximum: Float = 0f,
     var new: Boolean = false,
     var bestOf: Int = 0,
     var selectedList: List<Marks> = listOf(),

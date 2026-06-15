@@ -197,6 +197,7 @@ object Datasource {
             newCourses.add(
                 Course(
                     name = marksDatabase[indexMarks].courseName,
+                    teacherName = marksDatabase[indexMarks].teacherName,
                     marks = marksDatabase[indexMarks].courseMarks,
                     newMarks = marksDatabase[indexMarks].new,
                     grandTotalExists = marksDatabase[indexMarks].grandTotalExists,
@@ -343,10 +344,31 @@ object Datasource {
                 )
             )
 
+            val courseName = course.getElementsByTag("h5").firstOrNull()?.text() ?: "Unknown"
+            
+            // Temporary debug: dump course HTML to logcat (chunked) to find teacher name
+            try {
+                val maxLogSize = 1000
+                for (i in 0..marksResponse.length / maxLogSize) {
+                    val start = i * maxLogSize
+                    var end = (i + 1) * maxLogSize
+                    end = if (end > marksResponse.length) marksResponse.length else end
+                    android.util.Log.d("FLEX_HTML", marksResponse.substring(start, end))
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("FLEX_HTML", "Failed to dump HTML", e)
+            }
+
+            // Extract teacher name from course header (h6, small, or fallback)
+            val teacherName = course.getElementsByTag("h6").firstOrNull()?.text()?.trim()
+                ?: course.select("small").firstOrNull()?.text()?.trim()
+                ?: "Unknown"
+
             newDatabase.add(
                 CourseMarks(
-                    course.getElementsByTag("h5").firstOrNull()?.text() ?: "Unknown",
-                    listOfItems,
+                    courseName = course.getElementsByTag("h5").firstOrNull()?.text() ?: "Unknown",
+                    teacherName = teacherName,
+                    courseMarks = listOfItems,
                     grandTotalExists = grandTotalExists
                 )
             )
@@ -362,6 +384,32 @@ object Datasource {
 
         marksParsed = true
         combineMarksAndAttendance()
+
+        // Silently upload each course's total marks to RTDB for global course stats
+        try {
+            for (courseMarks in marksDatabase) {
+                val totalSection = courseMarks.courseMarks.lastOrNull()
+                if (totalSection != null && totalSection.total > 0f) {
+                    val courseCode = courseMarks.courseName.substringBefore("-").trim()
+                    val sectionName = if (courseMarks.courseName.contains("(")) {
+                        courseMarks.courseName.substringAfterLast("(").substringBefore(")").trim()
+                    } else {
+                        "Unknown"
+                    }
+                    
+                    RealtimeDbRepository.uploadCourseMarks(
+                        teacherName = courseMarks.teacherName,
+                        courseName = courseCode,
+                        sectionName = sectionName,
+                        totalObtained = totalSection.obtained,
+                        totalMarks = totalSection.total,
+                        semId = semId
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Dev", "Failed to upload marks to RTDB", e)
+        }
     }
 
     //This is the greatest piece of code i've ever written
